@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:dairy/dataHelper.dart';
+import 'package:dairy/data_helper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/foundation.dart';
 // ignore: depend_on_referenced_packages
