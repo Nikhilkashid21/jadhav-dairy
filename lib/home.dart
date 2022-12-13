@@ -1,8 +1,6 @@
-import 'package:dairy/dbManager.dart';
-import 'package:dairy/dataHelper.dart';
+import 'package:dairy/db_manager.dart';
+import 'package:dairy/data_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class MyWidget extends StatefulWidget {
   const MyWidget({super.key});
