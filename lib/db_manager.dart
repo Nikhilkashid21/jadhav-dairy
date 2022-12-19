@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
-class DbStudentManager {
+class DbDairyProductManager {
   Database? _database;
 
   Future<void> openDB() async {
@@ -14,10 +14,10 @@ class DbStudentManager {
     } else {
       try {
         _database = await openDatabase(
-            p.join(await getDatabasesPath(), "student.db"),
+            p.join(await getDatabasesPath(), "dairyproduct.db"),
             version: 1, onCreate: (Database db, int version) async {
           await db.execute(
-              "CREATE TABLE student (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT , course TEXT, price INTEGER , fees REAL )");
+              "CREATE TABLE dairyproduct ( id INTEGER PRIMARY KEY AUTOINCREMENT, date  TEXT, baffaloMilk  REAL,  cowMilk  REAL, dhahi  REAL, lassi  REAL, butterMilk  REAL,  chahaPowder  REAL, paneer  REAL,  greenpiece  REAL, basundi  REAL,  khava  REAL )");
         });
       } catch (e) {
         // ignore: prefer_interpolation_to_compose_strings
@@ -26,37 +26,44 @@ class DbStudentManager {
     }
   }
 
-  Future<int> insertStudent(Student student) async {
+  Future<int> insertProduct(DairyHelper dairyHelper) async {
     await openDB();
-    return await _database!.insert('student', student.toMap());
+    return await _database!.insert('dairyproduct', dairyHelper.toMap());
   }
 
-  Future<List<Student>> getStudentList() async {
+  Future<List<DairyHelper>> getProductList() async {
     await openDB();
-    final List<Map<String, dynamic>> maps = await _database!.query('student');
+    final List<Map<String, dynamic>> maps =
+        await _database!.query('dairyproduct');
 
     return List.generate(maps.length, (index) {
-      return Student(
+      return DairyHelper(
         id: maps[index]['id'],
-        name: maps[index]['name'],
-        course: maps[index]['course'],
-        price: maps[index]['price'],
-        fees: maps[index]['fees'],
+        date: maps[index]['date'],
+        baffaloMilk: maps[index]['baffaloMilk'],
+        cowMilk: maps[index]['cowMilk'],
+        dhahi: maps[index]['dhahi'],
+        lassi: maps[index]['lassi'],
+        butterMilk: maps[index]['butterMilk'],
+        chahaPowder: maps[index]['chahaPowder'],
+        paneer: maps[index]['paneer'],
+        greenpiece: maps[index]['greenpiece'],
+        basundi: maps[index]['basundi'],
+        khava: maps[index]['khava'],
       );
     });
   }
 
-  Future<int> updateStudent(Student student) async {
+  Future<int> updateProduct(DairyHelper dairyHelper) async {
     await openDB();
 
-    return await _database!.update('student', student.toMap(),
-        where: 'id = ?', whereArgs: [student.id]);
+    return await _database!.update('dairyproduct', dairyHelper.toMap(),
+        where: 'id = ?', whereArgs: [dairyHelper.id]);
   }
 
-  Future<void> deleteStudent(int? id) async {
+  Future<void> deleteProduct(int? id) async {
     await openDB();
-    await _database!.delete('student', where: 'id = ?', whereArgs: [id]);
+    await _database!.delete('dairyproduct', where: 'id = ?', whereArgs: [id]);
 
-    // return await _database!.delete('student', where:  'id = ?',whereArgs: [student.id]);
   }
 }

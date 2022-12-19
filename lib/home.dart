@@ -17,6 +17,7 @@ class _MyWidgetState extends State<MyWidget> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.blue,
+
           automaticallyImplyLeading: true,
           title: const Text("Dairy Farm"),
           centerTitle: true,
