@@ -1,4 +1,4 @@
-import 'package:dairy/add_daily_record.dart';
+import 'package:dairy/add_dairyproduct.dart';
 import 'package:dairy/data_helper.dart';
 import 'package:dairy/db_manager.dart';
 import 'package:flutter/material.dart';
@@ -11,32 +11,33 @@ class DailyRecordList extends StatefulWidget {
 }
 
 class _DailyRecordListState extends State<DailyRecordList> {
-  final DbStudentManager dbManager =
-      DbStudentManager(); ////instance of Database
+  final DbDairyProductManager dbManager =
+      DbDairyProductManager(); ////instance of Database
 
-  final _formKey = GlobalKey<FormState>();
-  Student? student;
   int? updateIndex;
   ////Display Inserting Record
-  List<Student>? studentlist;
+  List<DairyHelper>? dairyproductlist;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: FutureBuilder(
-          future: dbManager.getStudentList(),
+          future: dbManager.getProductList(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              studentlist = snapshot.data;
+              dairyproductlist = snapshot.data;
               return ListView.builder(
                   shrinkWrap: true,
-                  itemCount: studentlist == null ? 0 : studentlist!.length,
+                  itemCount:
+                      dairyproductlist == null ? 0 : dairyproductlist!.length,
                   itemBuilder: (BuildContext context, int index) {
-                    Student st = studentlist![index];
+                    DairyHelper st = dairyproductlist![index];
 
                     return Card(
+                      // color: Colors.green,
                       child: Row(
                         children: [
                           SizedBox(
@@ -44,10 +45,10 @@ class _DailyRecordListState extends State<DailyRecordList> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Student Name: ${st.name}"),
-                                Text("Course Name: ${st.course}"),
-                                Text("Price: ${st.price}"),
-                                Text("Fees: ${st.fees}"),
+                                Text("Date: ${st.date}"),
+                                Text("Baffalo Milk: ${st.baffaloMilk}"),
+                                Text("Cow Milk: ${st.cowMilk}"),
+                                Text("Paneer: ${st.paneer}"),
                               ],
                             ),
                           ),
@@ -55,29 +56,67 @@ class _DailyRecordListState extends State<DailyRecordList> {
                             width: 10,
                           ),
                           IconButton(
+                            icon: const Icon(Icons.edit),
                             onPressed: () {
-                              // _nameController.text = st.name;
-                              // _courseController.text =
-                              //     st.course;
-                              // _priceController.text =
-                              //     st.price.toString();
-                              // _feesController.text =
-                              //     st.fees.toString();
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => DairyProduct(
+                                        item: st,
+                                      )));
+
+                              //   _nameController.text = st.name;
+                              //   _courseController.text = st.course;
+                              //   _priceController.text = st.price.toString();
+                              //     _feesController.text = st.fees.toString();
                               // student = st;
 
-                              // updateIndex = index;
+                              updateIndex = index;
                             },
-                            icon: const Icon(Icons.edit),
                           ),
                           IconButton(
-                            onPressed: () {
-                              dbManager.deleteStudent(st.id);
-                              print("Delete Item");
+                            // onPressed: () {
+                            // dbManager.deleteProduct(st.id);
+                            // print("Delete Item");
 
-                              setState(() {
-                                studentlist!.removeAt(index);
-                              });
+                            // setState(() {
+                            //   dairyproductlist!.removeAt(index);
+                            // });
+                            // },
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      scrollable: true,
+                                      content: const Text(
+                                          "Are you sure you want to delete ?"),
+                                      actions: [
+                                        TextButton(
+                                          child: const Text("No"),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        MaterialButton(
+                                          onPressed: () {
+                                            dbManager.deleteProduct(st.id);
+                                            print("Delete Item");
+
+                                            setState(() {
+                                              dairyproductlist!.removeAt(index);
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                          color: Colors.green,
+                                          child: const Text('Yes',
+                                              style: TextStyle(
+                                                  fontSize: 16.0,
+                                                  color: Colors.white)),
+                                        )
+                                      ],
+                                    );
+                                  });
                             },
+
                             icon: const Icon(Icons.delete),
                           )
                         ],
@@ -93,8 +132,11 @@ class _DailyRecordListState extends State<DailyRecordList> {
         isExtended: true,
         backgroundColor: Colors.blue,
         onPressed: () {
+          // Navigator.of(context).push(
+          //     MaterialPageRoute(builder: (context) => const DailyRecord()));
+
           Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const DailyRecord()));
+              MaterialPageRoute(builder: (context) => const DairyProduct()));
         },
         child: const Icon(Icons.add),
       ),
